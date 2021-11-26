@@ -14,7 +14,7 @@ namespace TestASP
         public void Test1()
         {
 
-
+            System.Console.WriteLine("coucou");
 
             Assert.Pass();
         }
