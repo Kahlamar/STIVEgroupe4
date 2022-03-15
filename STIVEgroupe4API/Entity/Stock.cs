@@ -1,22 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using STIVEgroupe4API.Service;
-
-namespace STIVEgroupe4API.Controllers;
-
-public class Stock : Controller
+﻿namespace STIVEgroupe4API.Entity
 {
-    public class StockController : ControllerBase
+    public class Stock
     {
-        
-
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpGet]
-        public ActionResult<List<int>> GetStock()
-        {
-            return new OkObjectResult(NegoSudService.InventaireStock());
-        }
-        
-        
+        public int QuantiteRouge { get; set; }
+        public int QuantiteRose { get; set; }
+        public int QuantiteBlanc { get; set; }
+        public int QuantitePetillant { get; set; }
+        public int QuantiteDigestif { get; set; }
     }
 }

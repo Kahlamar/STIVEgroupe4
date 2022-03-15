@@ -7,7 +7,7 @@ namespace STIVEgroupe4API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class CommandeClientController : ControllerBase
-    { 
+    {
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet]
@@ -15,7 +15,7 @@ namespace STIVEgroupe4API.Controllers
         {
             return new OkObjectResult(NegoSudService.GetAllCommandeClient());
         }
-        
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{idCommandeClient:int}")]
@@ -27,7 +27,7 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id de la commande client est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.GetOneCommandeClient(idCommandeClient));
         }
 
@@ -42,14 +42,14 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id de la commande client est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.GetAllCommandesByClient(idClient));
         }
-        
-        
-        
-        
-        
+
+
+
+
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("create")]
@@ -61,11 +61,11 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id de la commande client est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.CreateOneCommandeClient(commandeClient));
         }
-        
-        
+
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("update")]
@@ -77,10 +77,10 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id de la commande client est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.UpdateOneCommandeClient(commandeClient));
         }
-        
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("delete/{idCommandeClient:int}")]
@@ -92,7 +92,7 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id de la commande client est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.DeleteOneCommandeClient(idCommandeClient));
         }
     }

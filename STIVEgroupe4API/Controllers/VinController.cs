@@ -9,7 +9,7 @@ namespace STIVEgroupe4API.Controllers
     [ApiController]
     public class VinController : ControllerBase
     {
-        
+
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -18,7 +18,7 @@ namespace STIVEgroupe4API.Controllers
         {
             return new OkObjectResult(NegoSudService.GetAllVin());
         }
-        
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{idVin}")]
@@ -30,7 +30,7 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id du vin est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.GetOneVin(idVin));
         }
 
@@ -45,11 +45,11 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id du vin est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.CreateOneVin(vin));
         }
-        
-        
+
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("update")]
@@ -61,10 +61,10 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id du vin est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.UpdateOneVin(vin));
         }
-        
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("delete/{idClient}")]
@@ -76,10 +76,10 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id du client est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.DeleteOneVin(idVin));
         }
 
-        
+
     }
 }

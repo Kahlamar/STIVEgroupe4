@@ -16,7 +16,7 @@ namespace STIVEgroupe4API.Controllers
         {
             return new OkObjectResult(NegoSudService.GetAllCommmandeFournisseur());
         }
-        
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{idCommandeFournisseur}")]
@@ -28,7 +28,7 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id de la commande fournisseur est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.GetOneCommandeFournisseur(idCommandeFournisseur));
         }
 
@@ -43,11 +43,11 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id de la commande fournisseur est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.CreateOneCommandeFournisseur(commandeFournisseur));
         }
-        
-        
+
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("update")]
@@ -59,10 +59,10 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id de la commande fournisseur est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.UpdateOneCommandeFournisseur(commandeFournisseur));
         }
-        
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("delete/{idCommandeFournisseur}")]
@@ -74,7 +74,7 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id de la commande fournisseur est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.DeleteOneCommandeFournisseur(idCommandeFournisseur));
         }
     }

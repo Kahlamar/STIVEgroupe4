@@ -2,13 +2,14 @@ using System.Data;
 using System.Data.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using STIVEgroupe4API.Controllers;
 using STIVEgroupe4API.Entity;
 
 namespace STIVEgroupe4API.Service;
 
 public static class NegoSudService
 {
-    const string ConnexionString = @"Server=localhost;Database=NegoSud;Persist Security Info=True;Integrated Security=SSPI;";
+    const string ConnexionString = @"Server=localhost;Database=NegoSud;Persist Security Info=True;Integrated Security=SSPI;Encrypt=true; TrustServerCertificate=true;";
    
     
 //---------------------------------------------------------------------------------------------------------------------
@@ -19,11 +20,12 @@ public static class NegoSudService
     {
         IList<Vin> ?vins = null;
 
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"SELECT IdVin, Nom, Couleur, Annee, DegreAlcool FROM Vins;");
-        var rdr = cmd.ExecuteReader();
-        if (!rdr.HasRows) return vins;
+        SqlCommand? cmd = new(@"SELECT IdVin, Domaine, Couleur, Annee, DegreAlcool FROM Vins;");
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        if (!rdr.HasRows) 
+            return vins;
         while (rdr.Read())
         {
             vins?.Add(ConvertToVin(rdr));
@@ -31,26 +33,30 @@ public static class NegoSudService
 
         return vins;
     }
-    
+
     public static Vin GetOneVin(int idVin)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"SELECT IdVin, Nom, Couleur, Annee, DegreAlcool FROM Vins WHERE IdVin = @IdVin;");
-        cmd.CommandType = CommandType.Text;
+        SqlCommand? cmd = new(@"SELECT IdVin, Nom, Couleur, Annee, DegreAlcool FROM Vins WHERE IdVin = @IdVin;")
+        {
+            CommandType = CommandType.Text
+        };
         cmd.Parameters.AddWithValue("@IdVin", idVin);
-        var rdr = cmd.ExecuteReader();
-        var vin = ConvertToVin(rdr);
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        Vin? vin = ConvertToVin(rdr);
         return vin;
     }
     
     public static ActionResult CreateOneVin(Vin vin)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"CreateOneVin", con);
-        cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@Nom", vin.Domaine);
+        SqlCommand? cmd = new(@"CreateOneVin", con)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+        cmd.Parameters.AddWithValue("@Domaine", vin.Domaine);
         cmd.Parameters.AddWithValue("@Couleur", vin.Couleur);
         cmd.Parameters.AddWithValue("@Annee", vin.Annee);
         cmd.Parameters.AddWithValue("@DegreAlcool", vin.DegreAlcool);
@@ -60,12 +66,14 @@ public static class NegoSudService
     
     public static ActionResult UpdateOneVin(Vin vin)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"UpdateOneVin", con);
-        cmd.CommandType = CommandType.StoredProcedure;
+        SqlCommand? cmd = new(@"UpdateOneVin", con)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
         cmd.Parameters.AddWithValue("@IdVin", vin.IdVin);
-        cmd.Parameters.AddWithValue("@Nom", vin.Domaine);
+        cmd.Parameters.AddWithValue("@Domaine", vin.Domaine);
         cmd.Parameters.AddWithValue("@Couleur", vin.Couleur);
         cmd.Parameters.AddWithValue("@Annee", vin.Annee);
         cmd.Parameters.AddWithValue("@DegreAlcool", vin.DegreAlcool);
@@ -75,10 +83,12 @@ public static class NegoSudService
     
     public static ActionResult DeleteOneVin(int idVin)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"DELETE FROM Vin WHERE IdVin = @IdVin;");
-        cmd.CommandType = CommandType.Text;
+        SqlCommand? cmd = new(@"DELETE FROM Vin WHERE IdVin = @IdVin;")
+        {
+            CommandType = CommandType.Text
+        };
         cmd.Parameters.AddWithValue("@IdVin", idVin);
         cmd.ExecuteReader();
         return new OkResult();
@@ -100,54 +110,68 @@ public static class NegoSudService
     
 //---------------------------------------------------------------------------------------------------------------------
 
+    // lsiteCLients = NegoSudService.GetAllClient();
+
     #region Client
 
     public static IEnumerable<Client>? GetAllClient()
     {
         IList<Client> ?clients = null;
 
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"SELECT IdClient, Nom, Prenom, Societe, AdresseLivraison FROM Client;");
-        var rdr = cmd.ExecuteReader();
-        if (!rdr.HasRows) return clients;
+        SqlCommand? cmd = new(@"SELECT IdClient, Nom, Prenom, Societe, AdresseLivraison FROM Client;", con);
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        if (!rdr.HasRows)
+            return clients;
         while (rdr.Read())
         {
             clients?.Add(ConvertToClient(rdr));
         }
-
         return clients;
     }
     
     public static Client GetOneClient(int idClient)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
+
+        Client client = new();
         con.Open();
-        var cmd = new SqlCommand(@"SELECT IdClient, Nom, Prenom, Societe, AdresseLivraison FROM Client WHERE IdClient = @idClient;");
-        cmd.CommandType = CommandType.Text;
-        cmd.Parameters.AddWithValue("@idClient", idClient);
-        var rdr = cmd.ExecuteReader();
-        var client = ConvertToClient(rdr);
+        SqlCommand cmd = new(@"SELECT IdClient, Nom, Prenom, Societe, AdresseLivraison FROM Clients WHERE IdClient = @IdClient;", con)
+        {
+            CommandType = CommandType.Text
+        };
+        cmd.Parameters.AddWithValue("@IdClient", idClient);
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        while (rdr.Read())
+        {
+            client = ConvertToClient(rdr);
+        }
+        
         return client;
     }
 
     public static ActionResult DeleteOneClient(int idClient)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"DELETE FROM Client WHERE IdClient = @idClient;");
-        cmd.CommandType = CommandType.Text;
-        cmd.Parameters.AddWithValue("@idClient", idClient);
+        SqlCommand? cmd = new(@"DELETE FROM Client WHERE IdClient = @IdClient;", con)
+        {
+            CommandType = CommandType.Text
+        };
+        cmd.Parameters.AddWithValue("@IdClient", idClient);
         cmd.ExecuteReader();
         return new OkResult();
     }
 
     public static ActionResult UpdateOneClient(Client client)
     {
-        using SqlConnection con = new SqlConnection(ConnexionString);
+        using SqlConnection con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"UpdateOneClient", con);
-        cmd.CommandType = CommandType.StoredProcedure;
+        SqlCommand? cmd = new(@"UpdateOneClient", con)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
         cmd.Parameters.AddWithValue("@IdClient", client.IdClient);
         cmd.Parameters.AddWithValue("@Nom", client.Nom);
         cmd.Parameters.AddWithValue("@Prenom", client.Prenom);
@@ -159,10 +183,12 @@ public static class NegoSudService
 
     public static ActionResult CreateOneClient(Client client)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"CreateOneClient", con);
-        cmd.CommandType = CommandType.StoredProcedure;
+        SqlCommand? cmd = new(@"CreateOneClient", con)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
         cmd.Parameters.AddWithValue("@Nom", client.Nom);
         cmd.Parameters.AddWithValue("@Prenom", client.Prenom);
         cmd.Parameters.AddWithValue("@Societe", client.Societe);
@@ -195,11 +221,13 @@ public static class NegoSudService
     {
         IList<CommandeClient> ?commandeClients = null;
 
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"SELECT IdCommandeClient, QuantiteVin, IdClient FROM CommandeClients;");
-        var rdr = cmd.ExecuteReader();
-        if (!rdr.HasRows) return commandeClients;
+        SqlCommand? cmd = new(@"SELECT IdCommandeClient, IdClient, QuantiteRouge, QuantiteRose, QuantiteBlanc, 
+                              QuantitePetillant, QuantiteDigestif FROM CommandeClients;");
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        if (!rdr.HasRows) 
+            return commandeClients;
         while (rdr.Read())
         {
             commandeClients?.Add(ConvertToCommandeClient(rdr));
@@ -210,34 +238,45 @@ public static class NegoSudService
     
     public static CommandeClient GetOneCommandeClient(int idCommandeClient)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"SELECT IdCommandeClient, QuantiteVin, IdClient FROM CommandeClients WHERE IdCommandeClient = @idCommandeClient");
-        cmd.CommandType = CommandType.Text;
-        cmd.Parameters.AddWithValue("@idCommandeClient", idCommandeClient);
-        var rdr = cmd.ExecuteReader();
-        var commandeClient = ConvertToCommandeClient(rdr);
+        SqlCommand? cmd = new(@"SELECT IdCommandeClient, IdClient, QuantiteRouge, QuantiteRose, QuantiteBlanc, 
+                              QuantitePetillant, QuantiteDigestif FROM CommandeClients WHERE IdCommandeClient = @IdCommandeClient")
+        {
+            CommandType = CommandType.Text
+        };
+        cmd.Parameters.AddWithValue("@IdCommandeClient", idCommandeClient);
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        CommandeClient? commandeClient = ConvertToCommandeClient(rdr);
         return commandeClient;
     }
     
     public static ActionResult DeleteOneCommandeClient(int idCommandeClient)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"DELETE FROM CommandeClient WHERE IdCommandeClient = @idCommandeClient;");
-        cmd.CommandType = CommandType.Text;
-        cmd.Parameters.AddWithValue("@idCommandeClient", idCommandeClient);
+        SqlCommand? cmd = new(@"DELETE FROM CommandeClient WHERE IdCommandeClient = @IdCommandeClient;")
+        {
+            CommandType = CommandType.Text
+        };
+        cmd.Parameters.AddWithValue("@IdCommandeClient", idCommandeClient);
         cmd.ExecuteReader();
         return new OkResult();
     }
     
     public static ActionResult CreateOneCommandeClient(CommandeClient commandeClient)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"CreateOneCommandeClient", con);
-        cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@QuantiteVin", commandeClient.QuantiteVin);
+        SqlCommand? cmd = new(@"CreateOneCommandeClient", con)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+        cmd.Parameters.AddWithValue("@QuantiteRouge", commandeClient.QuantiteRouge);
+        cmd.Parameters.AddWithValue("@QuantiteRose", commandeClient.QuantiteRose);
+        cmd.Parameters.AddWithValue("@QuantiteBlanc", commandeClient.QuantiteBlanc);
+        cmd.Parameters.AddWithValue("@QuantitePetillant", commandeClient.QuantitePetillant);
+        cmd.Parameters.AddWithValue("@QuantiteDigestif", commandeClient.QuantiteDigestif);
         cmd.Parameters.AddWithValue("@IdClient", commandeClient.IdClient);
         cmd.ExecuteReader();
         return new OkResult();
@@ -245,13 +284,18 @@ public static class NegoSudService
     
     public static ActionResult UpdateOneCommandeClient(CommandeClient commandeClient)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"UpdateOneCommandeClient", con);
-        cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@QuantiteVin", commandeClient.QuantiteVin);
+        SqlCommand? cmd = new(@"UpdateOneCommandeClient", con)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+        cmd.Parameters.AddWithValue("@QuantiteRouge", commandeClient.QuantiteRouge);
+        cmd.Parameters.AddWithValue("@QuantiteRose", commandeClient.QuantiteRose);
+        cmd.Parameters.AddWithValue("@QuantiteBlanc", commandeClient.QuantiteBlanc);
+        cmd.Parameters.AddWithValue("@QuantitePetillant", commandeClient.QuantitePetillant);
+        cmd.Parameters.AddWithValue("@QuantiteDigestif", commandeClient.QuantiteDigestif);
         cmd.Parameters.AddWithValue("@IdCommandeClient", commandeClient.IdCommandeClient);
-                
         cmd.ExecuteReader();
         return new OkResult();
     }
@@ -260,13 +304,17 @@ public static class NegoSudService
     {
         IList<CommandeClient> ?commandeClients = null;
 
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"SELECT IdCommandeClient, QuantiteVin, DateCommande FROM CommandeClients WHERE IdClient = @idClient;");
-        cmd.CommandType = CommandType.Text;
-        cmd.Parameters.AddWithValue(@"idClient", idClient);
-        var rdr = cmd.ExecuteReader();
-        if (!rdr.HasRows) return commandeClients;
+        SqlCommand? cmd = new(@"SELECT IdCommandeClient, IdClient, QuantiteRouge, QuantiteRose, QuantiteBlanc, 
+                              QuantitePetillant, QuantiteDigestif, DateCommande FROM CommandeClients WHERE IdClient = @IdClient;")
+        {
+            CommandType = CommandType.Text
+        };
+        cmd.Parameters.AddWithValue(@"IdClient", idClient);
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        if (!rdr.HasRows) 
+            return commandeClients;
         while (rdr.Read())
         {
             commandeClients?.Add(ConvertToCommandeClient(rdr));
@@ -277,16 +325,18 @@ public static class NegoSudService
 
 
 
-
-
     private static CommandeClient ConvertToCommandeClient(DbDataReader reader)
     {
         return new CommandeClient
         {
             IdCommandeClient = reader.GetFieldValue<int>(0),
-            QuantiteVin = reader.GetFieldValue<int>(1),
-            DateCommande = reader.GetFieldValue<DateTime>(2),
-            IdClient = reader.GetFieldValue<int>(3)
+            QuantiteRouge = reader.GetFieldValue<int>(1),
+            QuantiteRose = reader.GetFieldValue<int>(2),
+            QuantiteBlanc = reader.GetFieldValue<int>(3),
+            QuantitePetillant = reader.GetFieldValue<int>(4),
+            QuantiteDigestif = reader.GetFieldValue<int>(5),
+            DateCommande = reader.GetFieldValue<DateTime>(6),
+            IdClient = reader.GetFieldValue<int>(7)
         };
     }
     
@@ -300,61 +350,79 @@ public static class NegoSudService
     {
         IList<CommandeFournisseur>? commandesFournisseurs = null;
 
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"SELECT IdCommandeFournisseur, QuantiteVin, IdFournisseur FROM CommandeFournisseurs;");
-        var rdr = cmd.ExecuteReader();
-        if (!rdr.HasRows) return commandesFournisseurs;
+        SqlCommand? cmd = new(@"SELECT IdCommandeFournisseur, IdFournisseur, QuantiteRouge, QuantiteRose, QuantiteBlanc, 
+                              QuantitePetillant, QuantiteDigestif FROM CommandeFournisseurs;");
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        if (!rdr.HasRows) 
+            return commandesFournisseurs;
         while (rdr.Read())
         {
             commandesFournisseurs?.Add(ConvertToCommandeFournisseur(rdr));
         }
-
         return commandesFournisseurs;
     }
 
     public static CommandeFournisseur GetOneCommandeFournisseur(int idCommandeFournisseur)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"SELECT IdCommandeFournisseur, QuantiteVin, IdFournisseur FROM CommandeFournisseurs WHERE IdCommandeFournisseur = @idCommandeFournisseur");
-        cmd.CommandType = CommandType.Text;
-        cmd.Parameters.AddWithValue("@idCommandeFournisseur", idCommandeFournisseur);
-        var rdr = cmd.ExecuteReader();
-        var commandeFournisseur = ConvertToCommandeFournisseur(rdr);
+        SqlCommand? cmd = new(@"SELECT IdCommandeFournisseur, IdFournisseur, QuantiteRouge, QuantiteRose, QuantiteBlanc, 
+                              QuantitePetillant, QuantiteDigestif FROM CommandeFournisseurs WHERE IdCommandeFournisseur = @IdCommandeFournisseur")
+        {
+            CommandType = CommandType.Text
+        };
+        cmd.Parameters.AddWithValue("@IdCommandeFournisseur", idCommandeFournisseur);
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        CommandeFournisseur? commandeFournisseur = ConvertToCommandeFournisseur(rdr);
         return commandeFournisseur;
     }
 
     public static ActionResult DeleteOneCommandeFournisseur(int idCommandeFournisseur)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"DELETE FROM CommandeFournisseurs WHERE IdCommandeFournisseur = @idCommandeFournisseur;");
-        cmd.CommandType = CommandType.Text;
-        cmd.Parameters.AddWithValue("@idCommandeFournisseur", idCommandeFournisseur);
+        SqlCommand? cmd = new(@"DELETE FROM CommandeFournisseurs WHERE IdCommandeFournisseur = @IdCommandeFournisseur;")
+        {
+            CommandType = CommandType.Text
+        };
+        cmd.Parameters.AddWithValue("@IdCommandeFournisseur", idCommandeFournisseur);
         cmd.ExecuteReader();
         return new OkResult();
     }
 
     public static ActionResult UpdateOneCommandeFournisseur(CommandeFournisseur commandeFournisseur)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"UpdateOneCommandeFournisseur", con);
-        cmd.CommandType = CommandType.StoredProcedure;
+        SqlCommand? cmd = new(@"UpdateOneCommandeFournisseur", con)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
         cmd.Parameters.AddWithValue("@IdCommandeFournisseur", commandeFournisseur.IdCommandeFournisseur);
-        cmd.Parameters.AddWithValue("@QuantiteVin", commandeFournisseur.QuantiteVin);
+        cmd.Parameters.AddWithValue("@QuantiteRouge", commandeFournisseur.QuantiteRouge);
+        cmd.Parameters.AddWithValue("@QuantiteRose", commandeFournisseur.QuantiteRose);
+        cmd.Parameters.AddWithValue("@QuantiteBlanc", commandeFournisseur.QuantiteBlanc);
+        cmd.Parameters.AddWithValue("@QuantitePetillant", commandeFournisseur.QuantitePetillant);
+        cmd.Parameters.AddWithValue("@QuantiteDigestif", commandeFournisseur.QuantiteDigestif);
         cmd.ExecuteReader();
         return new OkResult();
     }
 
     public static ActionResult CreateOneCommandeFournisseur(CommandeFournisseur commandeFournisseur)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"CreateOneCommandeFournisseur", con);
-        cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@QuantiteVin", commandeFournisseur.QuantiteVin);
+        SqlCommand? cmd = new(@"CreateOneCommandeFournisseur", con)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+        cmd.Parameters.AddWithValue("@QuantiteRouge", commandeFournisseur.QuantiteRouge);
+        cmd.Parameters.AddWithValue("@QuantiteRose", commandeFournisseur.QuantiteRose);
+        cmd.Parameters.AddWithValue("@QuantiteBlanc", commandeFournisseur.QuantiteBlanc);
+        cmd.Parameters.AddWithValue("@QuantitePetillant", commandeFournisseur.QuantitePetillant);
+        cmd.Parameters.AddWithValue("@QuantiteDigestif", commandeFournisseur.QuantiteDigestif);
         cmd.Parameters.AddWithValue("@IdFournisseur", commandeFournisseur.IdFournisseur);
         cmd.ExecuteReader();
         return new OkResult();
@@ -365,7 +433,11 @@ public static class NegoSudService
         return new CommandeFournisseur
         {
             IdCommandeFournisseur = reader.GetFieldValue<int>(0),
-            QuantiteVin = reader.GetFieldValue<int>(1),
+            QuantiteRouge = reader.GetFieldValue<int>(1),
+            QuantiteRose = reader.GetFieldValue<int>(2),
+            QuantiteBlanc = reader.GetFieldValue<int>(3),
+            QuantitePetillant = reader.GetFieldValue<int>(3),
+            QuantiteDigestif = reader.GetFieldValue<int>(3),
             DateCommande = reader.GetFieldValue<DateTime>(2),
             IdFournisseur = reader.GetFieldValue<int>(3)
         };
@@ -381,37 +453,41 @@ public static class NegoSudService
     {
         IList<Fournisseur>? fournisseurs = null;
 
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"SELECT IdFournisseur, SocieteFournisseur FROM Fournisseurs;");
-        var rdr = cmd.ExecuteReader();
-        if (!rdr.HasRows) return fournisseurs;
+        SqlCommand? cmd = new(@"SELECT IdFournisseur, SocieteFournisseur FROM Fournisseurs;");
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        if (!rdr.HasRows) 
+            return fournisseurs;
         while (rdr.Read())
         {
             fournisseurs?.Add(ConvertToFournisseur(rdr));
         }
-
         return fournisseurs;
     }
 
     public static Fournisseur GetOneFournisseur(int idFournisseur)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"SELECT IdFournisseur, SocieteFournisseur FROM Fournisseurs WHERE IdFournisseur = @IdFournisseur;");
-        cmd.CommandType = CommandType.Text;
+        SqlCommand? cmd = new(@"SELECT IdFournisseur, SocieteFournisseur FROM Fournisseurs WHERE IdFournisseur = @IdFournisseur;")
+        {
+            CommandType = CommandType.Text
+        };
         cmd.Parameters.AddWithValue("@IdFournisseur", idFournisseur);
-        var rdr = cmd.ExecuteReader();
-        var fournisseur = ConvertToFournisseur(rdr);
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        Fournisseur? fournisseur = ConvertToFournisseur(rdr);
         return fournisseur;
     }
 
     public static ActionResult DeleteOneFournisseur(int idFournisseur)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"DELETE FROM Fournisseur WHERE IdFournisseur = @IdFournisseur;");
-        cmd.CommandType = CommandType.Text;
+        SqlCommand? cmd = new(@"DELETE FROM Fournisseur WHERE IdFournisseur = @IdFournisseur;")
+        {
+            CommandType = CommandType.Text
+        };
         cmd.Parameters.AddWithValue("@IdFournisseur", idFournisseur);
         cmd.ExecuteReader();
         return new OkResult();
@@ -419,10 +495,12 @@ public static class NegoSudService
 
     public static ActionResult UpdateOneFournisseur(Fournisseur fournisseur)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"UpdateOneFournisseur", con);
-        cmd.CommandType = CommandType.StoredProcedure;
+        SqlCommand? cmd = new(@"UpdateOneFournisseur", con)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
         cmd.Parameters.AddWithValue("@IdFournisseur", fournisseur.IdFournisseur);
         cmd.Parameters.AddWithValue("@SocieteFournisseur", fournisseur.SocieteFournisseur);
         cmd.ExecuteReader();
@@ -431,10 +509,12 @@ public static class NegoSudService
 
     public static ActionResult CreateOneFournisseur(Fournisseur fournisseur)
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"InsertOneFournisseur", con);
-        cmd.CommandType = CommandType.StoredProcedure;
+        SqlCommand? cmd = new(@"InsertOneFournisseur", con)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
         cmd.Parameters.AddWithValue("@SocieteFournisseur", fournisseur.SocieteFournisseur);
         cmd.ExecuteReader();
         return new OkResult();
@@ -457,12 +537,14 @@ public static class NegoSudService
 
     public static Stock InventaireStock()
     {
-        using var con = new SqlConnection(ConnexionString);
+        using SqlConnection? con = new(ConnexionString);
         con.Open();
-        var cmd = new SqlCommand(@"SELECT QuantiteRouge, QuantiteRose, QuantiteBlanc, QuantitePetillant, QuantiteDigestif FROM Stock");
-        cmd.CommandType = CommandType.Text;
-        var rdr = cmd.ExecuteReader();
-        var stock = ConvertToStock(rdr);
+        SqlCommand? cmd = new(@"SELECT QuantiteRouge, QuantiteRose, QuantiteBlanc, QuantitePetillant, QuantiteDigestif FROM Stock")
+        {
+            CommandType = CommandType.Text
+        };
+        SqlDataReader? rdr = cmd.ExecuteReader();
+        Stock? stock = ConvertToStock(rdr);
         return stock;
     }
     private static Stock ConvertToStock(DbDataReader reader)

@@ -8,7 +8,7 @@ namespace STIVEgroupe4API.Controllers
     [ApiController]
     public class ClientController : ControllerBase
     {
-        #region Clients
+        
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -17,7 +17,7 @@ namespace STIVEgroupe4API.Controllers
         {
             return new OkObjectResult(NegoSudService.GetAllClient());
         }
-        
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("{idClient}")]
@@ -29,7 +29,7 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id du client est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.GetOneClient(idClient));
         }
 
@@ -44,11 +44,11 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id du client est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.CreateOneClient(client));
         }
-        
-        
+
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("update")]
@@ -60,10 +60,10 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id du client est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.UpdateOneClient(client));
         }
-        
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("delete/{idClient}")]
@@ -75,13 +75,12 @@ namespace STIVEgroupe4API.Controllers
                 return new BadRequestObjectResult("L'id du client est négatif ou null.");
 
             #endregion
-            
+
             return new OkObjectResult(NegoSudService.DeleteOneClient(idClient));
         }
 
-        #endregion
-        
-        
-        
+
+
+
     }
 }

@@ -7,4 +7,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\STIVEgroupe4API\STIVEgroupe4API.csproj" />
+  </ItemGroup>
+
 </Project>
