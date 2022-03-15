@@ -96,11 +96,11 @@ namespace InterfaceBloc4STIVE
                 AdresseLivraison = reader.GetFieldValue<string>(4),
                 Nom = reader.GetFieldValue<string>(5),
                 Prenom = reader.GetFieldValue<string>(6),
-                QuantiteRouge = reader.GetFieldValue<int>(6),
-                QuantiteRose = reader.GetFieldValue<int>(7),
-                QuantiteBlanc = reader.GetFieldValue<int>(8),
-                QuantiteDigestif = reader.GetFieldValue<int>(9),
-                QuantitePetillant = reader.GetFieldValue<int>(10)               
+                QuantiteRouge = reader.GetFieldValue<int>(7),
+                QuantiteRose = reader.GetFieldValue<int>(8),
+                QuantiteBlanc = reader.GetFieldValue<int>(9),
+                QuantiteDigestif = reader.GetFieldValue<int>(10),
+                QuantitePetillant = reader.GetFieldValue<int>(11)               
             };
 
         }
