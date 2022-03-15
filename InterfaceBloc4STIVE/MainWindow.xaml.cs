@@ -49,13 +49,12 @@ namespace InterfaceBloc4STIVE
 
                 // execute the command
                 SqlDataReader rdr = cmd.ExecuteReader();
-                if (rdr.HasRows)
+                
+                while (rdr.Read())
                 {
-                    while (rdr.Read())
-                    {
-                        commandeClients.Add(ConvertToCommandeClients(rdr));
-                    }
+                    commandeClients.Add(ConvertToCommandeClients(rdr));
                 }
+                
                 return commandeClients;
             }
         }
