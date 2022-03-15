@@ -37,14 +37,20 @@ public static class NegoSudService
     public static Vin GetOneVin(int idVin)
     {
         using SqlConnection? con = new(ConnexionString);
-        con.Open();
-        SqlCommand? cmd = new(@"SELECT IdVin, Nom, Couleur, Annee, DegreAlcool FROM Vins WHERE IdVin = @IdVin;")
-        {
-            CommandType = CommandType.Text
-        };
+        Vin vin = new();
+            con.Open();
+            SqlCommand? cmd = new(@"SELECT IdVin, Nom, Couleur, Annee, DegreAlcool FROM Vins WHERE IdVin = @IdVin;")
+            {
+                CommandType = CommandType.Text
+            };
         cmd.Parameters.AddWithValue("@IdVin", idVin);
         SqlDataReader? rdr = cmd.ExecuteReader();
-        Vin? vin = ConvertToVin(rdr);
+
+        while (rdr.Read())
+        {
+            vin = ConvertToVin(rdr);
+        }
+        
         return vin;
     }
     
@@ -116,17 +122,17 @@ public static class NegoSudService
 
     public static IEnumerable<Client>? GetAllClient()
     {
-        IList<Client> ?clients = null;
+        List<Client> clients = new();
 
         using SqlConnection? con = new(ConnexionString);
         con.Open();
-        SqlCommand? cmd = new(@"SELECT IdClient, Nom, Prenom, Societe, AdresseLivraison FROM Client;", con);
+        SqlCommand? cmd = new(@"SELECT IdClient, Nom, Prenom, Societe, AdresseLivraison FROM Clients;", con);
         SqlDataReader? rdr = cmd.ExecuteReader();
-        if (!rdr.HasRows)
-            return clients;
+        //if (!rdr.HasRows)
+        //    return clients;
         while (rdr.Read())
         {
-            clients?.Add(ConvertToClient(rdr));
+            clients.Add(ConvertToClient(rdr));
         }
         return clients;
     }

@@ -24,30 +24,23 @@
 
                             <TextBlock Text="Stock Actuel" FontSize="16" Margin="10"/>
 
-                            <StackPanel  Orientation="Horizontal" Margin="20,20,1,20" Grid.Column="0">
-                                <TextBlock Text="Rouge :" FontSize="24" Margin="10"/>
-                                <TextBlock Text="25" FontSize="16" Margin="10"/>
-                            </StackPanel>
 
-                            <StackPanel  Orientation="Horizontal" Margin="20,20,1,20" Grid.Column="0">
-                                <TextBlock Text="Blanc :" FontSize="24" Margin="10"/>
-                                <TextBlock Text="25" FontSize="16" Margin="10"/>
-                            </StackPanel>
+                            <TextBlock FontSize="28" Margin="2,5" Text="Quantité Rouge" Width="200"></TextBlock>
+                            <TextBlock FontSize="14" Text="{Binding QuantiteRouge}" Width="112" />
 
-                            <StackPanel  Orientation="Horizontal" Margin="20,20,1,20" Grid.Column="0">
-                                <TextBlock Text="Rosé :" FontSize="24" Margin="10"/>
-                                <TextBlock Text="25" FontSize="16" Margin="10"/>
-                            </StackPanel>
+                            <TextBlock FontSize="28" Margin="2,5" Text="Quantité Rosé" Width="182"></TextBlock>
+                            <TextBlock FontSize="14" Text="{Binding QuantiteRose}" Width="112" />
 
-                            <StackPanel  Orientation="Horizontal" Margin="20,20,1,20" Grid.Column="0">
-                                <TextBlock Text="Digestif :" FontSize="24" Margin="10"/>
-                                <TextBlock Text="25" FontSize="16" Margin="10"/>
-                            </StackPanel>
 
-                            <StackPanel  Orientation="Horizontal" Margin="20,20,1,20" Grid.Column="0">
-                                <TextBlock Text="Pétillant :" FontSize="24" Margin="10"/>
-                                <TextBlock Text="25" FontSize="16" Margin="10"/>
-                            </StackPanel>
+                            <TextBlock FontSize="28" Margin="2,5" Text="Quantité Blanc" Width="190"></TextBlock>
+                            <TextBlock FontSize="14" Text="{Binding QuantiteBlanc}" Width="112" />
+
+                            <TextBlock FontSize="28" Margin="2,5" Text="Quantité Digestif" Width="216"></TextBlock>
+                            <TextBlock FontSize="14" Text="{Binding QuantiteDigestif}" Width="112" />
+
+                            <TextBlock FontSize="28" Margin="2,5" Text="Quantité Pétillant" Width="231"></TextBlock>
+                            <TextBlock FontSize="14" Text="{Binding QuantitePetillant}" Width="112" />
+
 
 
 
@@ -64,7 +57,6 @@
 
                         <TextBlock FontSize="28" Margin="2,5" Text="Quantité Rosé" Width="182"></TextBlock>
                         <TextBox FontSize="14" Text="20 Max" Width="112" />
-
 
                         <TextBlock FontSize="28" Margin="2,5" Text="Quantité Blanc" Width="190"></TextBlock>
                         <TextBox FontSize="14" Text="20 Max" Width="112" />
@@ -98,23 +90,94 @@
                     <DataGrid Name="GridCommandesClients" 
                               AutoGenerateColumns="False" Margin="10,0,-41,0">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID Commande" Width="*" />
-                            <DataGridTextColumn Header="ID Client" Width="*" />
-                            <DataGridTextColumn Header="Date Commande" Width="*" />
-                            <DataGridTextColumn Header="Société" Width="*" />
-                            <DataGridTextColumn Header="Adresse Livraison" Width="*" />
-                            <DataGridTextColumn Header="Nom" Width="*" />
-                            <DataGridTextColumn Header="Prenom" Width="*" />
-                            <DataGridTextColumn Header="Quantité Rouge" Width="*" />
-                            <DataGridTextColumn Header="Quantité Rosé" Width="*" />
-                            <DataGridTextColumn Header="Quantité Blanc" Width="*" />
-                            <DataGridTextColumn Header="Quantité Digestif" Width="*" />
-                            <DataGridTextColumn Header="Quantité Pétillant" Width="*" />
+                            <DataGridTemplateColumn Header="ID Commande" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding IdCommandeClient}" Name="IdCommande"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="ID Client" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding IdClient}" Name="IdClient"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Date Commande" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DateCommande}" Name="DateCommande"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Société" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Societe}" Name="Societe"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Adresse Livraison" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding AdresseLivraison}" Name="AdresseLivraison"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Nom" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Nom}" Name="Nom"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Prenom" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Prenom}" Name="Prenom"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Quantité Rouge" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding QuantiteRouge}" Name="QuantiteRouge"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Quantité Rosé" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding QuantiteRose}" Name="QuantiteRose"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Quantité Blanc" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding QuantiteBlanc}" Name="QuantiteBlanc"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Quantité Digestif" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding QuantiteDigestif}" Name="QuantiteDigestif"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Quantité Pétillant" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding QuantitePetillant}" Name="Quantitepetillant"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTemplateColumn Header="Action" Width="250">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <Button Name="ModifButton">Modifier</Button>
                                             <Button Name="SupprimerButton" >Supprimer</Button>
                                         </StackPanel>
                                     </DataTemplate>
@@ -133,19 +196,67 @@
                     <DataGrid Name="GridCommandesFournisseurs" 
                               AutoGenerateColumns="False" Margin="10,0,-41,0">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID Commande" Width="*" />
-                            <DataGridTextColumn Header="Date Commande" Width="*" />
-                            <DataGridTextColumn Header="Société" Width="*" />
-                            <DataGridTextColumn Header="Quantité Rouge" Width="*" />
-                            <DataGridTextColumn Header="Quantité Rosé" Width="*" />
-                            <DataGridTextColumn Header="Quantité Blanc" Width="*" />
-                            <DataGridTextColumn Header="Quantité Digestif" Width="*" />
-                            <DataGridTextColumn Header="Quantité Pétillant" Width="*" />
+                            <DataGridTemplateColumn Header="ID Commande" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding IdCommandeFournisseur}" Name="IdCommande"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Date Commande" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DateCommande}" Name="DateCommande"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Société" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding SocieteFournisseur}" Name="Societe"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Quantité Rouge" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding QuantiteRouge}" Name="QuantiteRouge"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Quantité Rosé" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding QuantiteRose}" Name="QuantiteRose"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Quantité Blanc" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding QuantiteBlanc}" Name="QuantiteBlanc"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Quantité Digestif" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding QuantiteDigestif}" Name="QuantiteDigestif"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Quantité Pétillant" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding QuantitePetillant}" Name="Quantitepetillant"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTemplateColumn Header="Action" Width="250">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <Button Name="ModifButton" >Modifier</Button>
+                                           
                                             <Button Name="SupprimerButton" >Supprimer</Button>
                                         </StackPanel>
                                     </DataTemplate>

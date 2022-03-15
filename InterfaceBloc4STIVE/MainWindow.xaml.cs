@@ -25,12 +25,15 @@ namespace InterfaceBloc4STIVE
     {
 
         string connectionString = @"Server=localhost;Database=NegoSud;Persist Security Info=True;Integrated Security=SSPI;Encrypt=true; TrustServerCertificate=true;";
-
+        
+        
         public MainWindow()
         {
             InitializeComponent();
             GridCommandesClients.ItemsSource = GetListeCommandeClients();
             GridCommandesFournisseurs.ItemsSource = GetListeCommandeFournisseurs();
+            Stock stock = GetStock();
+            this.DataContext = stock;
         }
 
         public IList<CommandeClient> GetListeCommandeClients()
@@ -85,6 +88,40 @@ namespace InterfaceBloc4STIVE
                 return commandeFournisseur;
             }
         }
+
+        public Stock GetStock()
+        {
+            Stock stock = new();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                // 1.  create a command object identifying the stored procedure
+                SqlCommand cmd = new SqlCommand(
+                            @"SELECT TOP (1000) [QuantiteRouge]
+                              ,[QuantiteRose]
+                              ,[QuantiteBlanc]
+                              ,[QuantitePetillant]
+                              ,[QuantiteDigestif]
+                          FROM [NegoSud].[dbo].[Stock]", conn);
+
+                // execute the command
+                SqlDataReader rdr = cmd.ExecuteReader();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        stock = ConvertToStock(rdr);
+                    }
+                }
+                return stock;
+            }
+        }
+
+
+
+
+
         public CommandeClient ConvertToCommandeClients(DbDataReader reader)
         {
             return new CommandeClient
@@ -122,5 +159,23 @@ namespace InterfaceBloc4STIVE
             };
 
         }
+
+        public Stock ConvertToStock(DbDataReader reader)
+        {
+            return new Stock
+            {
+                QuantiteRouge = reader.GetFieldValue<int>(0),
+                QuantiteRose = reader.GetFieldValue<int>(1),
+                QuantiteBlanc = reader.GetFieldValue<int>(2),
+                QuantitePetillant = reader.GetFieldValue<int>(3),
+                QuantiteDigestif = reader.GetFieldValue<int>(4),
+            };
         }
+
+
+
+
+
+
+    }
 }
